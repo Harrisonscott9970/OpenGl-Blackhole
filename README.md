@@ -1,25 +1,28 @@
-# TON 618 (Black Hole Mission) — COMP3015 CW1
+<img width="799" height="602" alt="image" src="https://github.com/user-attachments/assets/615ccbbf-e3c2-42ba-86b7-3fb79fb64f28" /># TON 618 (Black Hole Mission) — COMP3015 CW1
 
 **Student:** Harrison Scott  
-**Student ID:** [ADD YOUR STUDENT ID]  
+**Student ID:** 10805603
 **Module:** COMP3015 – Games Graphics Pipelines  
 **Module Leader:** Dr Ji-Jian Chin  
-**Repository:** [ADD YOUR PUBLIC GITHUB REPO LINK]  
+**Repository:** https://github.com/Harrisonscott9970/OpenGl-Blackhole.git
 **Video Demo:** [ADD YOUR UNLISTED YOUTUBE VIDEO LINK]
 
 ---
 
 ## Project Overview
 
-TON 618 (Black Hole Mission) is an OpenGL / GLSL real-time graphics prototype created for **COMP3015 CW1**.
+TON 618 (Black Hole Mission) is an OpenGL / GLSL real-time graphics prototype created for COMP3015 CW1.
 
-The project presents a stylised sci-fi black hole scene in which the player explores a hazardous orbital environment, collects energy cells from floating platforms, and returns safely to the home platform before being consumed by the black hole, TON 618.
+The project presents a stylised sci-fi black hole scene in which the player explores an orbital environment, collects energy cells from floating platforms, and returns safely to the home platform before being consumed by the black hole, TON 618.
 
 The main goal of the project was to combine a **custom shader-driven black hole effect** with a **textured Blinn-Phong lighting pipeline**, framebuffer post-processing, and a simple gameplay loop so that the scene is not only visually interesting but also interactive and purposeful.
 
 The project was developed from the **COMP3015 Lab 1 template**, then expanded with original scene logic, shader work, post-processing, procedural effects, and gameplay systems.
 
-[ADD 2–4 SCREENSHOTS HERE OF: overall scene, black hole close-up, accretion disk/platform view, win/lose or gameplay view]
+<img width="799" height="602" alt="image" src="https://github.com/user-attachments/assets/b5302641-6f37-452b-873a-9d596373df13" />
+<img width="801" height="632" alt="image" src="https://github.com/user-attachments/assets/255d8e35-73ab-4d22-8a50-e1cba532028e" />
+<img width="800" height="556" alt="image" src="https://github.com/user-attachments/assets/6c6b4836-16cc-4558-b97d-eeb56a860813" />
+
 
 ---
 
@@ -28,7 +31,6 @@ The project was developed from the **COMP3015 Lab 1 template**, then expanded wi
 | Item | Detail |
 |---|---|
 | IDE | Visual Studio 2022 |
-| Operating System | [ADD YOUR OPERATING SYSTEM, e.g. Windows 10 Pro 22H2 / Windows 11] |
 | OpenGL Version | 4.3 Core Profile |
 | Template Base | COMP3015 Lab 1 template |
 | Libraries | GLAD, GLFW, GLM, Assimp, stb_image |
@@ -37,11 +39,7 @@ The project was developed from the **COMP3015 Lab 1 template**, then expanded wi
 
 ## Submission / Opening Instructions
 
-Open **`[ADD YOUR SOLUTION FILE NAME, e.g. CompProject.sln]`** in **Visual Studio 2022**.
-
-Set **`[ADD YOUR STARTUP PROJECT NAME, e.g. Project_Template]`** as the startup project.
-
-Run the project from the project root so the `shader/` and `media/` folders are found correctly.
+Open **`Project_Template.sln`** in **Visual Studio**.
 
 The final submission zip includes:
 
@@ -49,10 +47,7 @@ The final submission zip includes:
 - the executable version
 - all required assets and shader files
 - this README
-- the signed Generative AI declaration appendix
-- the AI prompt / transcript appendix
-
-The final submission should not include unnecessary build/cache folders such as `Debug`, `Release`, `x64`, `.vs`, `ipch`, or `.sdf` files.
+- the signed Generative AI declaration
 
 ---
 
@@ -68,8 +63,6 @@ This project was designed to address the CW1 rubric areas as follows:
 - **Animation:** animated pickups, orbiting light behaviour, moving asteroid/debris elements, animated accretion disk
 - **Keyboard / mouse control:** player free-look and movement controls plus rendering toggles
 - **Gamification:** objective, fail state, win state, feedback, and reset loop
-
-This structure was intentionally chosen so that the project would go beyond a minimal graphics demo and instead function as a coherent, game-like rendering prototype.
 
 ---
 
@@ -93,13 +86,13 @@ This structure was intentionally chosen so that the project would go beyond a mi
 
 The player must:
 
-1. fly between the floating platforms
-2. collect all energy cells
-3. return to the home platform
+1. Fly between the floating platforms
+2. Collect all energy cells
+3. Return to the home platform
 
 The black hole applies increasing danger and pull as the player gets closer. If the player crosses the event horizon, the mission fails and resets. If all cells are collected and the player returns to base, the mission is completed and resets into a new layout.
 
-This was done to ensure the scene had clear mechanics, challenge, failure, completion, and feedback rather than functioning only as a static visual showcase.
+This was done to ensure the scene had clear mechanics, challenge, failure, and completion rather than functioning only as a visual showcase.
 
 ---
 
@@ -140,7 +133,7 @@ At a high level:
   - accretion disk
   - platforms
   - pickups
-  - asteroids / debris
+  - asteroids
   - skybox
 - the HDR framebuffer is then processed for bloom, tone mapping, gamma correction, and optional film-style post effects
 
@@ -152,12 +145,11 @@ At a high level:
 
 The centrepiece of the project is the black hole shader. The goal was to create a visually recognisable black hole rather than just a black sphere.
 
-This shader performs an iterative ray-bending style effect to distort the sampled skybox around the black hole. The visual result includes:
+This shader performs an iterative ray-bending style effect to distort the skybox around the black hole. The visual result:
 
 - background lensing
 - a photon-ring-like bright edge
 - secondary ring detail
-- capture inside the event horizon
 - colour asymmetry inspired by relativistic motion
 
 This part of the project was **influenced by research into black hole visualisation**, but adapted into my own coursework scene rather than copied directly. The research-inspired element is the lensing / ray-bending visual concept. The surrounding scene integration, gameplay structure, post-processing pipeline, accretion disk design, and overall rendering composition are my own implementation choices for this project.
@@ -165,16 +157,15 @@ This part of the project was **influenced by research into black hole visualisat
 **Research inspiration:**  
 Müller, T. & Grave, F. (2010). *Catalogue of Spacetimes*. arXiv:0904.4184.
 
-This feature is also cited inline in the shader code and is discussed in the accompanying video report.  
-[ONLY KEEP THE SENTENCE ABOVE IF YOU HAVE ACTUALLY ADDED THE INLINE COMMENT(S) TO THE SHADER AND TALK ABOUT IT IN THE VIDEO]
+This feature is also cited in the shader code and is discussed in the video report.  
 
 ---
 
 ## 2. Procedural Accretion Disk
 
-The accretion disk is rendered separately from the black hole sphere and is designed to feel energetic, unstable, and visually distinct from a simple textured ring.
+The accretion disk is rendered separately from the black hole sphere and is designed to feel fast, unstable, and visually distinct from a simple textured ring.
 
-Techniques used include:
+Techniques used:
 
 - procedural turbulence / fBm-style distortion
 - spiral UV motion
@@ -182,13 +173,13 @@ Techniques used include:
 - lighting response from the orbiting light
 - two-part rendering around the black hole to improve visual layering
 
-This gives the scene more motion and visual identity than a static ring mesh and helps the black hole read as a more cinematic focal point.
+This gives the scene more motion and visual identity than a static ring mesh and helps the black hole read as more cinematic.
 
 ---
 
 ## 3. Blinn-Phong Multi-Light Shading
 
-The platform shader uses **Blinn-Phong** shading in the fragment shader, which satisfies the CW1 custom shading requirement while allowing a more polished specular response than a purely diffuse model.
+The platform shader uses **Blinn-Phong** shading in the fragment shader.
 
 The shader includes:
 
@@ -200,7 +191,7 @@ The shader includes:
 - texture sampling
 - pixel discard effects for animated cell visuals
 
-This combination was chosen to make the platforms, pickups, and related scene props feel more grounded in the same world as the black hole effect.
+This combination was chosen to make the platforms, pickups, and related scene props feel more sci-fi and connected in the same design as the black hole effect.
 
 ---
 
@@ -241,7 +232,7 @@ The project tries to go beyond a standard “lit textured model” by combining 
 - HDR / bloom post-processing
 - a small gameplay loop
 
-The main idea came from wanting to build a scene that looked more like a cinematic space anomaly than a basic graphics lab exercise. I started from the provided COMP3015 template and then designed an original black-hole-centred scene around it. The goal was to make the black hole the visual focus, while the platforms, pickups, and mission structure gave the player a reason to move around and observe the rendering from different angles.
+The goal was to make the black hole the visual focus, while the platforms, pickups, and mission structure gave the player a reason to move around and observe the rendering from different angles.
 
 ---
 
@@ -260,7 +251,7 @@ The main idea came from wanting to build a scene that looked more like a cinemat
 
 This means the prototype has goals, challenge, failure, completion, and feedback, which helps it read as a game-like graphics prototype rather than only a technical demo.
 
-[ADD A SCREENSHOT HERE OF: gameplay objective view OR collected cells / platform route / near-black-hole danger moment]
+<img width="786" height="533" alt="image" src="https://github.com/user-attachments/assets/f2275410-c658-47db-ad56-cf54d13569f0" />
 
 ---
 
@@ -271,9 +262,8 @@ A few practical trade-offs came up during development:
 - the scene uses several separate shaders instead of forcing everything into one program, which improves clarity and debugging
 - bloom and HDR improve image quality but add extra render passes and framebuffer cost
 - higher mesh density on the black hole sphere improves appearance but increases geometry cost
-- the project favours visual readability and demonstration value over deep optimisation because this is a coursework prototype rather than a shipping game
 
-I tried to keep responsibilities separated so that rendering logic, camera logic, shader stages, and mission logic were easier to follow and debug.
+I tried to keep things separated so that rendering logic, camera logic, shader stages, and mission logic were easier to follow and debug.
 
 ---
 
@@ -285,16 +275,10 @@ Examples of work carried out during development included:
 
 - fixing shader compilation issues and correcting rendering bugs
 - tuning black hole distortion so the effect remained readable from different camera angles
-- adjusting asteroid / debris behaviour and scene motion to better support the visual theme
-- refining bloom, exposure, and post-processing settings so the scene looked dramatic without becoming unreadable
+- adjusting asteroid behaviour and scene motion to better support the visual theme
+- refining bloom, exposure, and post-processing settings so the scene looked good without becoming too much
 - resolving project setup and dependency issues so the coursework project could build and run correctly from the intended folder structure
 - improving mission/game-state behaviour such as win/lose/reset flow and pickup feedback
-
-Generative AI was used as a **partnered support tool** during parts of this process, including debugging help, explanation of compiler/runtime issues, code-structure suggestions, and assistance with documenting the final project. All final code decisions, integrations, and testing were reviewed and carried out by me.
-
-[ADD 1–2 SHORT EXAMPLES IN BRACKETS HERE IF YOU WANT THIS TO LOOK EVEN STRONGER, e.g.  
-- “Example: fixing `glad.c` project path issues when testing the project from a copied GitHub folder”  
-- “Example: debugging shader compilation problems and removing unsupported `#include` usage in GLSL”]
 
 ---
 
@@ -318,34 +302,71 @@ If I had more time, I would improve:
 - even stronger documentation of the research-paper connection
 
 ---
+## References
 
-## Originality / Starting Point
+### Research / Technical References
 
-This project was built from the **COMP3015 Lab 1 template**, as required by the brief.
+- Müller, T. & Grave, F. (2010). *Catalogue of Spacetimes*. arXiv:0904.4184.  
+  Used as research inspiration for the black hole lensing / ray-bending visual approach implemented in `blackhole.frag`.
 
-From that starting point, I added my own:
+- Blinn, J. F. (1977). *Models of light reflection for computer synthesized pictures*.  
+  Referenced for the Blinn-Phong shading model used in the platform/pickup lighting shader.
 
-- black hole rendering concept and integration
-- accretion disk implementation
-- shader combinations and scene composition
-- mission/gameplay loop
-- post-processing setup
-- platform / pickup / asteroid scene logic
-- scene balancing and presentation choices
+- LearnOpenGL.  
+  Used as a general reference for OpenGL techniques, framebuffer workflows, cubemaps, camera handling, and rendering structure.  
+  [ADD SPECIFIC PAGE LINKS IF YOU USED ANY]
 
-Where external ideas, papers, or standard resources influenced the work, they are acknowledged below and referenced in relevant code comments where appropriate.
+- Assimp Documentation.  
+  Used as reference for model loading and imported mesh handling.
+
+- stb_image Documentation.  
+  Used as reference for image/texture loading.
 
 ---
 
-## References
+### Asset Credits
 
-- Müller, T. & Grave, F. (2010). *Catalogue of Spacetimes*. arXiv:0904.4184.
-- LearnOpenGL – general OpenGL techniques and reference material.
-- Blinn, J. F. (1977). *Models of light reflection for computer synthesized pictures*.
-- Assimp documentation.
-- stb_image documentation.
-- [ADD ANY MODEL / TEXTURE / ASSET SOURCES YOU USED]
-- [ADD ANY OTHER SHADER / RESEARCH SOURCES YOU REFERENCED]
+#### Skybox / Space Cubemap
+The project uses a six-face space skybox/cubemap with files such as:
+
+- `jettelly_space_common_blue_RIGHT.png`
+- `jettelly_space_common_blue_LEFT.png`
+- `jettelly_space_common_blue_UP.png`
+- `jettelly_space_common_blue_DOWN.png`
+- `jettelly_space_common_blue_FRONT.png`
+- `jettelly_space_common_blue_BACK.png`
+
+[ADD THE ORIGINAL SOURCE / AUTHOR / WEBSITE / LICENSE FOR THIS SKYBOX PACK HERE]
+
+If the alternate renamed faces are also included in the project, these correspond to:
+- `right.png`
+- `left.png`
+- `top.png`
+- `bottom.png`
+- `front.png`
+- `back.png`
+
+---
+
+#### Platforms
+The project uses metal textures including:
+
+- `blue_metal_plate_diff_4k.jpg`
+- `blue_metal_plate_disp_4k.png`
+
+These were used for platform/environment surface materials.
+
+[ADD THE ORIGINAL SOURCE / AUTHOR / WEBSITE / LICENSE FOR THESE TEXTURES HERE]
+
+---
+
+#### 3D Model
+The project uses the following imported model asset:
+
+- `cell.obj`
+- `cell.mtl`
+
+This model was created by me.
 
 ---
 
@@ -368,26 +389,4 @@ The final implementation was reviewed, edited, integrated, tested, and understoo
 
 [MAKE SURE APPENDIX A AND B ACTUALLY EXIST IN YOUR SUBMISSION]
 
----
-
-## AI Prompts / Transcript Appendix
-
-As required by the brief, the AI prompt/transcript log is included in the submission appendix / supporting documentation.
-
-To make this clear for the marker, the appendix should show the main types of partnered AI support used during development, for example:
-
-- debugging shader compilation or project setup problems
-- improving README/report wording
-- discussing rendering ideas and implementation options
-- helping reason about portability/build issues
-- refining gameplay or post-processing behaviour
-
-[ADD YOUR REAL PROMPT / TRANSCRIPT DOCUMENT TO THE SUBMISSION ZIP]
-
----
-
-## Final Notes
-
-This project was designed to satisfy the CW1 requirement for a **custom GLSL shading prototype using textured 3D rendering, intentional scene design, interaction, and presentation quality**. The focus was on producing a visually coherent and technically layered scene rather than a minimal single-technique demonstration.
-
-[OPTIONAL: ADD A FINAL SCREENSHOT HERE OF THE BEST-LOOKING CAMERA ANGLE IN THE PROJECT]
+<img width="794" height="546" alt="image" src="https://github.com/user-attachments/assets/10752ab8-1b9c-4bf7-896b-8054cdb71a56" />
