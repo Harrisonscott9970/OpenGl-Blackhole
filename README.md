@@ -1,4 +1,4 @@
-<img width="799" height="602" alt="image" src="https://github.com/user-attachments/assets/615ccbbf-e3c2-42ba-86b7-3fb79fb64f28" /># TON 618 (Black Hole Mission) — COMP3015 CW1
+# TON 618 (Black Hole Mission) — COMP3015 CW1
 
 **Student:** Harrison Scott  
 **Student ID:** 10805603
@@ -21,8 +21,6 @@ The project was developed from the **COMP3015 Lab 1 template**, then expanded wi
 
 <img width="799" height="602" alt="image" src="https://github.com/user-attachments/assets/b5302641-6f37-452b-873a-9d596373df13" />
 <img width="801" height="632" alt="image" src="https://github.com/user-attachments/assets/255d8e35-73ab-4d22-8a50-e1cba532028e" />
-<img width="800" height="556" alt="image" src="https://github.com/user-attachments/assets/6c6b4836-16cc-4558-b97d-eeb56a860813" />
-
 
 ---
 
@@ -118,8 +116,6 @@ The application is built around a single main scene class which handles initiali
 | `helper/` | Template/helper OpenGL support code |
 
 ### Code flow
-
-At a high level:
 
 - `main.cpp` creates the application and loads the scene
 - `SceneBasic_Uniform::initScene()` compiles shaders, builds meshes, loads textures/models, sets OpenGL state, and resets the mission
@@ -223,7 +219,7 @@ The skybox is not just decorative: it is essential to the black hole shader beca
 
 ## What Makes This Shader Program Special
 
-The project tries to go beyond a standard “lit textured model” by combining several ideas into one scene:
+The project tries to go beyond a standard lit textured model by combining several ideas into one scene:
 
 - a research-inspired black hole visual effect
 - a procedural accretion disk
@@ -249,7 +245,7 @@ The goal was to make the black hole the visual focus, while the platforms, picku
 | Reset loop | Automatic restart after win/lose |
 | Pickup feedback | Spin, shrink, burst, camera shake |
 
-This means the prototype has goals, challenge, failure, completion, and feedback, which helps it read as a game-like graphics prototype rather than only a technical demo.
+This means the project has goals, challenge, failure, completion, and feedback, which helps it read as a game-like graphics prototype rather than only a technical demo.
 
 <img width="786" height="533" alt="image" src="https://github.com/user-attachments/assets/f2275410-c658-47db-ad56-cf54d13569f0" />
 
@@ -384,9 +380,5 @@ AI-supported assistance included:
 
 The final implementation was reviewed, edited, integrated, tested, and understood by me before submission.
 
-**Appendix A:** Signed Generative AI Declaration  
-**Appendix B:** AI Prompt / Transcript Log
-
-[MAKE SURE APPENDIX A AND B ACTUALLY EXIST IN YOUR SUBMISSION]
 
 <img width="794" height="546" alt="image" src="https://github.com/user-attachments/assets/10752ab8-1b9c-4bf7-896b-8054cdb71a56" />
