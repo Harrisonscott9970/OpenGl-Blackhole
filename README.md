@@ -4,8 +4,8 @@
 **Student ID:** 10805603
 **Module:** COMP3015 – Games Graphics Pipelines  
 **Module Leader:** Dr Ji-Jian Chin  
-**Repository:** https://github.com/Harrisonscott9970/OpenGl-Blackhole.git
-**Video Demo:** [ADD YOUR UNLISTED YOUTUBE VIDEO LINK]
+**Repository:** https://github.com/Harrisonscott9970/OpenGl-Blackhole.git                                
+**Video Demo:** https://youtu.be/1ipkKEMOUo4?si=fXvkbHazLmj_OEna
 
 ---
 
@@ -20,7 +20,6 @@ The main goal of the project was to combine a **custom shader-driven black hole 
 The project was developed from the **COMP3015 Lab 1 template**, then expanded with original scene logic, shader work, post-processing, procedural effects, and gameplay systems.
 
 <img width="799" height="602" alt="image" src="https://github.com/user-attachments/assets/b5302641-6f37-452b-873a-9d596373df13" />
-<img width="801" height="632" alt="image" src="https://github.com/user-attachments/assets/255d8e35-73ab-4d22-8a50-e1cba532028e" />
 
 ---
 
@@ -332,15 +331,7 @@ The project uses a six-face space skybox/cubemap with files such as:
 - `jettelly_space_common_blue_FRONT.png`
 - `jettelly_space_common_blue_BACK.png`
 
-[ADD THE ORIGINAL SOURCE / AUTHOR / WEBSITE / LICENSE FOR THIS SKYBOX PACK HERE]
-
-If the alternate renamed faces are also included in the project, these correspond to:
-- `right.png`
-- `left.png`
-- `top.png`
-- `bottom.png`
-- `front.png`
-- `back.png`
+https://jettelly.com/blog/some-space-skyboxes-why-not
 
 ---
 
@@ -352,7 +343,7 @@ The project uses metal textures including:
 
 These were used for platform/environment surface materials.
 
-[ADD THE ORIGINAL SOURCE / AUTHOR / WEBSITE / LICENSE FOR THESE TEXTURES HERE]
+https://polyhaven.com/a/blue_metal_plate
 
 ---
 
