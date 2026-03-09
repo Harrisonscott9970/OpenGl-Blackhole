@@ -1,8 +1,7 @@
 #version 430 core
 // blinnphong.vert
-// Standard Blinn-Phong vertex shader (reference / prototype shader).
-// Passes world-space data to the fragment stage for per-fragment lighting.
-// NOTE: The full Blinn-Phong implementation used in this project is inside
+// Standard Blinn-Phong vertex shader.
+// NOTE - The full Blinn-Phong implementation used in this project is inside
 //       platform.vert / platform.frag (with normal-map and multi-light support).
 
 layout (location = 0) in vec3 aPos;

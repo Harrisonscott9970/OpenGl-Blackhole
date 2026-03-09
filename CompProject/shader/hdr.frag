@@ -24,13 +24,13 @@ uniform vec2  uBHScreenPos;
 uniform float uBHVisible;
 uniform float uBHGaze;
 
-// ── Noise ────────────────────────────────────────────────────────────────────
+// Noise
 float hash(vec2 p)
 {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
 }
 
-// ── Film Mode ────────────────────────────────────────────────────────────────
+// Film Mode
 // Chromatic aberration, subtle colour grade, vignette and film grain.
 vec3 applyFilmMode(vec2 uv, vec3 baseColor)
 {
@@ -64,7 +64,7 @@ vec3 applyFilmMode(vec2 uv, vec3 baseColor)
     return clamp(col, 0.0, 1.0);
 }
 
-// ── Black Hole Screen Haze ───────────────────────────────────────────────────
+// Black Hole Screen Haze
 // Adds a subtle lens-flare glow around the BH screen position when visible.
 vec3 applyBlackHoleLensHaze(vec2 uv, vec3 color)
 {

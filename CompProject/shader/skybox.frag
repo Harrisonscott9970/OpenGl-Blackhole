@@ -1,6 +1,5 @@
 #version 430 core
 // skybox.frag
-// Samples the cube-map texture using the interpolated direction vector.
 
 out vec4 FragColor;
 

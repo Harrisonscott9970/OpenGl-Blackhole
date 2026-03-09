@@ -1,6 +1,6 @@
 #version 430 core
 // platform.vert
-// Vertex shader used for: satellite platforms, energy cells, and asteroids.
+// Vertex shader used for:  platforms, energy cells, and asteroids.
 // Outputs TBN matrix for normal-map support (tangent-space lighting).
 
 layout (location = 0) in vec3 aPos;

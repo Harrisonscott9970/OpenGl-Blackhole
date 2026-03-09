@@ -1,7 +1,6 @@
 #pragma once
 // ModelLoader.h
 // Loads all meshes from an Assimp-supported file into a single combined VAO.
-// Merges all submeshes so multi-part Blender models render completely.
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>

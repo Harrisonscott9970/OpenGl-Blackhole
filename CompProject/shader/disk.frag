@@ -17,7 +17,7 @@ uniform vec3  uLightPos;
 uniform vec3  uCamPos;
 uniform int   uDrawBack;  // 1 = back half, 0 = front half
 
-// ── Noise helpers ────────────────────────────────────────────────────────────
+// Noise helpers
 float hash(vec2 p)
 {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);

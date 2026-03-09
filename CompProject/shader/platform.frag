@@ -1,7 +1,7 @@
 #version 430 core
 // platform.frag
 // Multi-purpose Blinn-Phong fragment shader used for:
-//   - Satellite landing platforms (diffuse texture + normal map)
+//   - landing platforms (diffuse texture + normal map)
 //   - Energy cell pickups (emissive pulsing core mode)
 //   - Asteroids (colour tinted by proximity to black hole)
 //
@@ -40,7 +40,7 @@ uniform sampler2D uNormalTex;
 uniform int       uHasDiffuse;
 uniform int       uHasNormal;
 
-// ── Fog ──────────────────────────────────────────────────────────────────────
+// Fog 
 // Exponential squared fog: f = e^(-(density * dist)^2)
 // Deep-space purple-black so distant objects fade into the void.
 const float FOG_DENSITY = 0.00042;
@@ -53,7 +53,7 @@ float computeFog()
     return clamp(f, 0.0, 1.0);
 }
 
-// ── Blinn-Phong helper ───────────────────────────────────────────────────────
+// Blinn-Phong helper
 vec3 applyLight(
     vec3  N, vec3  V,
     vec3  lightPos, vec3  lightCol,
@@ -70,7 +70,7 @@ vec3 applyLight(
 
 void main()
 {
-    // ── Normal ───────────────────────────────────────────────────────────────
+    // Normal
     vec3 N;
     if (uHasNormal == 1)
     {
@@ -85,17 +85,16 @@ void main()
 
     vec3 V = normalize(uCamPos - vWorldPos);
 
-    // ── Energy cell / emissive core mode ─────────────────────────────────────
+    // Energy cell
     if (uIsCore == 1)
     {
         vec3  albedo  = (uHasDiffuse == 1) ? texture(uDiffuseTex, vUV).rgb : uBaseColor;
         float pulse   = 0.55 + 0.45 * sin(uTime * 4.0 + vUV.y * 12.0);
         float fresnel = pow(1.0 - max(dot(N, V), 0.0), 3.0);
 
-        // ── Pixel Discard (texturing sub-technique) ───────────────────────────
+        // Pixel Discard
         // Animated sparkle dissolve: discards fragments whose UV-space hash
-        // falls below a time-animated threshold. Creates a crackling energy
-        // shell effect with no extra geometry.
+        // falls below a time-animated threshold. make the cool crackling energy effect
         float sparkle   = fract(sin(dot(vUV * 18.3, vec2(127.1, 311.7))) * 43758.5);
         float threshold = 0.08 + 0.06 * sin(uTime * 3.5 + vUV.x * 20.0);
         if (sparkle < threshold) discard;
@@ -119,7 +118,7 @@ void main()
         return;
     }
 
-    // ── Platform / asteroid mode ──────────────────────────────────────────────
+    // Platform / asteroid mode
     vec3 baseCol = (uHasDiffuse == 1) ? texture(uDiffuseTex, vUV).rgb : uBaseColor;
 
     float gridX = abs(fract(vUV.x * 6.0) - 0.5);
@@ -156,7 +155,7 @@ void main()
         finalCol += uLightColor2 * scratchGlow * uLightStrength2;
     }
 
-    // ── Exponential fog ───────────────────────────────────────────────────────
+    // Exponential fog
     // Distant platforms/asteroids fade into the dark void of space.
     finalCol = mix(FOG_COLOR, finalCol, computeFog());
 

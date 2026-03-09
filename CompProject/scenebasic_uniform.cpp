@@ -31,10 +31,8 @@ static float randf(float minVal, float maxVal)
     return minVal + t * (maxVal - minVal);
 }
 
-// ─── Constructor ──────────────────────────────────────────────────────────────
 SceneBasic_Uniform::SceneBasic_Uniform() {}
 
-// ─── compile ─────────────────────────────────────────────────────────────────
 void SceneBasic_Uniform::compile()
 {
     try {
@@ -68,7 +66,6 @@ void SceneBasic_Uniform::compile()
     }
 }
 
-// ─── buildSphereMesh ─────────────────────────────────────────────────────────
 void SceneBasic_Uniform::buildSphereMesh(int stacks, int slices)
 {
     std::vector<float> verts;
@@ -149,7 +146,6 @@ void SceneBasic_Uniform::buildSphereMesh(int stacks, int slices)
     glBindVertexArray(0);
 }
 
-// ─── buildDiskMesh ───────────────────────────────────────────────────────────
 void SceneBasic_Uniform::buildDiskMesh()
 {
     std::vector<float> verts;
@@ -196,7 +192,6 @@ void SceneBasic_Uniform::buildDiskMesh()
     glBindVertexArray(0);
 }
 
-// ─── buildPlatformMesh ───────────────────────────────────────────────────────
 void SceneBasic_Uniform::buildPlatformMesh()
 {
     std::vector<float> verts;
@@ -279,7 +274,6 @@ void SceneBasic_Uniform::buildPlatformMesh()
     glBindVertexArray(0);
 }
 
-// ─── setupSkyboxGeometry ─────────────────────────────────────────────────────
 void SceneBasic_Uniform::setupSkyboxGeometry()
 {
     glGenVertexArrays(1, &skyboxVAO);
@@ -295,7 +289,6 @@ void SceneBasic_Uniform::setupSkyboxGeometry()
     glBindVertexArray(0);
 }
 
-// ─── setupScreenQuad ─────────────────────────────────────────────────────────
 void SceneBasic_Uniform::setupScreenQuad()
 {
     float v[] = {
@@ -323,7 +316,6 @@ void SceneBasic_Uniform::setupScreenQuad()
     glBindVertexArray(0);
 }
 
-// ─── setupHDRFramebuffer ─────────────────────────────────────────────────────
 void SceneBasic_Uniform::setupHDRFramebuffer()
 {
     glGenFramebuffers(1, &hdrFBO);
@@ -366,7 +358,6 @@ void SceneBasic_Uniform::setupHDRFramebuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-// ─── loadCubemap ─────────────────────────────────────────────────────────────
 GLuint SceneBasic_Uniform::loadCubemap(std::vector<std::string> faces)
 {
     GLuint id;
@@ -396,7 +387,6 @@ GLuint SceneBasic_Uniform::loadCubemap(std::vector<std::string> faces)
     return id;
 }
 
-// ─── loadTexture2D ───────────────────────────────────────────────────────────
 GLuint SceneBasic_Uniform::loadTexture2D(const std::string& path, bool flip)
 {
     GLuint tex = 0;
@@ -431,7 +421,6 @@ GLuint SceneBasic_Uniform::loadTexture2D(const std::string& path, bool flip)
 }
 
 
-// ─── initAsteroids ────────────────────────────────────────────────────────────
 void SceneBasic_Uniform::initAsteroids()
 {
     asteroids.clear();
@@ -443,7 +432,6 @@ void SceneBasic_Uniform::initAsteroids()
     std::cout << "[Spawn] " << asteroidCount << " asteroids seeded into the belt.\n";
 }
 
-// ─── respawnAsteroid ──────────────────────────────────────────────────────────
 void SceneBasic_Uniform::respawnAsteroid(Asteroid& asteroid, bool randomiseAngle)
 {
     asteroid.orbitRadius = randf(asteroidBeltInnerRadius, asteroidBeltOuterRadius);
@@ -486,7 +474,6 @@ void SceneBasic_Uniform::respawnAsteroid(Asteroid& asteroid, bool randomiseAngle
     asteroid.active = true;
 }
 
-// ─── updateAsteroids ──────────────────────────────────────────────────────────
 void SceneBasic_Uniform::updateAsteroids(float dt)
 {
     if (asteroids.empty()) return;
@@ -537,7 +524,6 @@ void SceneBasic_Uniform::updateAsteroids(float dt)
     }
 }
 
-// ─── renderAsteroids ──────────────────────────────────────────────────────────
 void SceneBasic_Uniform::renderAsteroids(const glm::mat4& view, const glm::mat4& proj, float t)
 {
     if (asteroids.empty()) return;
@@ -586,7 +572,6 @@ void SceneBasic_Uniform::renderAsteroids(const glm::mat4& view, const glm::mat4&
     glBindVertexArray(0);
 }
 
-// ─── spawnPlatformsAndCells ──────────────────────────────────────────────────
 void SceneBasic_Uniform::spawnPlatformsAndCells()
 {
     platformPositions.clear();
@@ -622,7 +607,6 @@ void SceneBasic_Uniform::spawnPlatformsAndCells()
     std::cout << "[Spawn] " << count << " satellite platforms created.\n";
 }
 
-// ─── resetGame ───────────────────────────────────────────────────────────────
 void SceneBasic_Uniform::resetGame()
 {
     camera = Camera(glm::vec3(0.0f, 3.5f, 145.0f));
@@ -642,7 +626,6 @@ void SceneBasic_Uniform::resetGame()
         << "Avoid getting pulled too close to the black hole.\n\n";
 }
 
-// ─── printGameStatus ─────────────────────────────────────────────────────────
 void SceneBasic_Uniform::printGameStatus()
 {
     int collected = 0;
@@ -654,7 +637,6 @@ void SceneBasic_Uniform::printGameStatus()
         << " | Film: " << (filmMode ? "ON" : "OFF") << "\n";
 }
 
-// ─── updateWindowTitle ───────────────────────────────────────────────────────
 void SceneBasic_Uniform::updateWindowTitle()
 {
     GLFWwindow* w = glfwGetCurrentContext();
@@ -688,7 +670,6 @@ void SceneBasic_Uniform::updateWindowTitle()
     glfwSetWindowTitle(w, oss.str().c_str());
 }
 
-// ─── initScene ───────────────────────────────────────────────────────────────
 void SceneBasic_Uniform::initScene()
 {
     compile();
@@ -727,7 +708,6 @@ void SceneBasic_Uniform::initScene()
     resetGame();
 }
 
-// ─── updatePickupAnimations ──────────────────────────────────────────────────
 void SceneBasic_Uniform::updatePickupAnimations(float dt)
 {
     for (auto& cell : energyCells)
@@ -767,7 +747,6 @@ void SceneBasic_Uniform::updatePickupAnimations(float dt)
     }
 }
 
-// ─── updateGame ──────────────────────────────────────────────────────────────
 void SceneBasic_Uniform::updateGame(float dt)
 {
     if (gameWon || gameLost) return;
@@ -846,7 +825,6 @@ void SceneBasic_Uniform::updateGame(float dt)
     }
 }
 
-// ─── update ──────────────────────────────────────────────────────────────────
 void SceneBasic_Uniform::update(float t)
 {
     static float lastT = 0.0f;
@@ -987,7 +965,6 @@ void SceneBasic_Uniform::update(float t)
     updateWindowTitle();
 }
 
-// ─── setPlatformUniforms ─────────────────────────────────────────────────────
 void SceneBasic_Uniform::setPlatformUniforms(const glm::mat4& view,
     const glm::mat4& proj,
     float t)
@@ -1007,7 +984,6 @@ void SceneBasic_Uniform::setPlatformUniforms(const glm::mat4& view,
     platformProg.setUniform("uLightStrength2", 0.0f);
 }
 
-// ─── renderCell ──────────────────────────────────────────────────────────────
 void SceneBasic_Uniform::renderCell(const EnergyCell& cell,
     const glm::mat4& view,
     const glm::mat4& proj,
@@ -1113,7 +1089,6 @@ void SceneBasic_Uniform::renderCell(const EnergyCell& cell,
     }
 }
 
-// ─── drawOverlayUI ───────────────────────────────────────────────────────────
 void SceneBasic_Uniform::drawOverlayUI()
 {
     auto drawRect = [&](int x, int y, int w, int h, float r, float g, float b)
@@ -1174,7 +1149,6 @@ void SceneBasic_Uniform::drawOverlayUI()
     glEnable(GL_DEPTH_TEST);
 }
 
-// ─── render ──────────────────────────────────────────────────────────────────
 void SceneBasic_Uniform::render()
 {
     float t = (float)glfwGetTime();
@@ -1403,7 +1377,6 @@ void SceneBasic_Uniform::render()
     drawOverlayUI();
 }
 
-// resize
 void SceneBasic_Uniform::resize(int w, int h)
 {
     width = w;
