@@ -17,7 +17,8 @@ The project presents a stylised sci-fi black hole scene in which the player expl
 
 The main goal of the project was to combine a **custom shader-driven black hole effect** with a **textured Blinn-Phong lighting pipeline**, framebuffer post-processing, and a simple gameplay loop so that the scene is not only visually interesting but also interactive and purposeful.
 
-The project was developed from the **COMP3015 Lab 1 template**, then expanded with original scene logic, shader work, post-processing, procedural effects, and gameplay systems.
+The project was developed from the **COMP3015 Lab 1 template**, then expanded with original scene logic, shader work, post-processing, procedural effects, gameplay systems, and additional debugging / safety logging to make the build easier to test and troubleshoot.
+
 
 <img width="799" height="602" alt="image" src="https://github.com/user-attachments/assets/b5302641-6f37-452b-873a-9d596373df13" />
 
@@ -52,14 +53,15 @@ The final submission zip includes:
 
 This project was designed to address the CW1 rubric areas as follows:
 
-- **Custom shading model:** Blinn-Phong fragment shading for the platform/pickup scene elements
-- **Textured technique:** diffuse texture sampling and normal mapping
-- **Lighting setup:** multiple lights and distance-based atmospheric/fog styling
+- **Custom shading model:** Blinn-Phong fragment shading for the platform, pickup, and asteroid scene elements
+- **Textured technique:** diffuse texture sampling on scene assets
+- **Lighting setup:** multiple dynamic point lights and emissive/glow-enhanced scene styling
 - **Skybox:** cubemap environment used as both scene background and black hole distortion source
-- **Image processing:** HDR framebuffer, bloom, Gaussian blur, tone mapping, gamma correction
-- **Animation:** animated pickups, orbiting light behaviour, moving asteroid/debris elements, animated accretion disk
+- **Image processing:** HDR framebuffer, bloom, Gaussian blur, tone mapping, gamma correction, and optional film mode
+- **Animation:** animated pickups, orbiting light behaviour, moving asteroid belt elements, and animated accretion disk
 - **Keyboard / mouse control:** player free-look and movement controls plus rendering toggles
 - **Gamification:** objective, fail state, win state, feedback, and reset loop
+- **Debugging / robustness:** runtime logging for shader compilation, framebuffer setup, asset loading, resize events, and mission state changes
 
 ---
 
@@ -101,10 +103,10 @@ The application is built around a single main scene class which handles initiali
 
 | File | Purpose |
 |---|---|
-| `main.cpp` | Application entry point |
-| `scenebasic_uniform.h/.cpp` | Main scene class: initialisation, update, rendering, post-processing, and mission logic |
-| `Camera.h/.cpp` | FPS-style camera controls and mouse look |
-| `ModelLoader.h` | Assimp-based model loading |
+| `main.cpp` | Application entry point and startup/shutdown logging |
+| `scenebasic_uniform.h/.cpp` | Main scene class: initialisation, update, rendering, post-processing, mission logic, and runtime debug logging |
+| `Camera.h/.cpp` | FPS-style camera controls, mouse look, and camera safety checks |
+| `ModelLoader.h` | Assimp-based model loading with asset/error reporting |
 | `shader/blackhole.vert/.frag` | Black hole sphere and gravitational lensing effect |
 | `shader/disk.vert/.frag` | Procedural accretion disk rendering |
 | `shader/platform.vert/.frag` | Blinn-Phong lighting for platforms, pickups, and asteroids |
@@ -117,12 +119,14 @@ The application is built around a single main scene class which handles initiali
 ### Code flow
 
 - `main.cpp` creates the application and loads the scene
-- `SceneBasic_Uniform::initScene()` compiles shaders, builds meshes, loads textures/models, sets OpenGL state, and resets the mission
+- `SceneBasic_Uniform::initScene()` compiles shaders, builds meshes, loads textures/models, sets OpenGL state, configures framebuffers, and resets the mission
 - update functions handle:
   - black hole pull and danger
   - pickup animation
+  - procedural asteroid movement
   - randomised mission/platform state
   - win/lose/reset flow
+  - runtime input handling and toggle logging
 - render functions draw:
   - black hole
   - accretion disk
@@ -181,10 +185,10 @@ The shader includes:
 - diffuse lighting
 - specular highlights
 - multiple point lights
-- normal mapping via TBN space
-- distance fog / atmospheric falloff
+- tangent-space lighting inputs
 - texture sampling
-- pixel discard effects for animated cell visuals
+- emissive/glow styling for pickups and scene highlights
+- per-object material variation for platforms, pickups, and asteroids
 
 This combination was chosen to make the platforms, pickups, and related scene props feel more sci-fi and connected in the same design as the black hole effect.
 
@@ -197,7 +201,6 @@ The project renders to a floating-point framebuffer and applies post-processing 
 Implemented post-processing includes:
 
 - HDR framebuffer rendering
-- bright-pass extraction
 - Gaussian blur
 - bloom composition
 - exposure-based tone mapping
@@ -238,10 +241,10 @@ The goal was to make the black hole the visual focus, while the platforms, picku
 | Objective | Collect all energy cells and return to base |
 | Challenge | Increasing black hole pull and danger near the centre |
 | Support mechanic | Nearby platforms reduce the pull effect |
-| Feedback | Window title / mission status updates |
+| Feedback | Window title updates, console feedback, and pickup/game-state logs |
 | Win state | Collect all cells and return to home platform |
 | Lose state | Cross the event horizon |
-| Reset loop | Automatic restart after win/lose |
+| Reset loop | Automatic restart after win/lose or manual reset with G |
 | Pickup feedback | Spin, shrink, burst, camera shake |
 
 This means the project has goals, challenge, failure, completion, and feedback, which helps it read as a game-like graphics prototype rather than only a technical demo.
@@ -257,8 +260,9 @@ A few practical trade-offs came up during development:
 - the scene uses several separate shaders instead of forcing everything into one program, which improves clarity and debugging
 - bloom and HDR improve image quality but add extra render passes and framebuffer cost
 - higher mesh density on the black hole sphere improves appearance but increases geometry cost
+- additional debug and safety logs were added to make startup issues, missing assets, framebuffer problems, and runtime state changes easier to identify
 
-I tried to keep things separated so that rendering logic, camera logic, shader stages, and mission logic were easier to follow and debug.
+I tried to keep things separated so that rendering logic, camera logic, shader stages, mission logic, and debugging behaviour were easier to follow and troubleshoot.
 
 ---
 
@@ -271,9 +275,13 @@ Examples of work carried out during development included:
 - fixing shader compilation issues and correcting rendering bugs
 - tuning black hole distortion so the effect remained readable from different camera angles
 - adjusting asteroid behaviour and scene motion to better support the visual theme
-- refining bloom, exposure, and post-processing settings so the scene looked good without becoming too much
+- refining bloom, exposure, and post-processing settings so the scene looked good without becoming too strong
 - resolving project setup and dependency issues so the coursework project could build and run correctly from the intended folder structure
 - improving mission/game-state behaviour such as win/lose/reset flow and pickup feedback
+- adding explicit runtime logging for shader compilation, framebuffer creation, cubemap loading, texture loading, model loading, mission reset, resize events, and gameplay toggles
+- adding basic safety checks for invalid resize values, null window/context access, and unstable runtime cases such as extreme black hole proximity
+
+These additions made the project easier to test and helped verify that the executable was loading the expected shaders, assets, and rendering pipeline correctly.
 
 ---
 
@@ -288,6 +296,7 @@ The strongest parts of the submission are:
 - the use of post-processing
 - the interactive mission structure
 - the overall visual identity
+- the debugging/logging support used during testing
 
 If I had more time, I would improve:
 
@@ -368,6 +377,7 @@ AI-supported assistance included:
 - project setup troubleshooting
 - documentation drafting and refinement
 - code-structure suggestions during iteration
+- suggestions for adding runtime logging and safety checks
 
 The final implementation was reviewed, edited, integrated, tested, and understood by me before submission.
 
