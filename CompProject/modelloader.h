@@ -113,10 +113,20 @@ public:
 
         indexCount = (int)allIndices.size();
 
+        if (allVertices.empty() || allIndices.empty()) {
+            std::cerr << "[ModelLoader] Model data empty after processing: " << path << "\n";
+            return false;
+        }
+
         // Upload merged geometry to GPU
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
+
+        if (VAO == 0 || VBO == 0 || EBO == 0) {
+            std::cerr << "[ModelLoader] Failed to create OpenGL buffers for: " << path << "\n";
+            return false;
+        }
 
         glBindVertexArray(VAO);
 
@@ -158,30 +168,19 @@ public:
         glBindVertexArray(0);
 
         loaded = true;
-        std::cout << "[ModelLoader] Loaded: " << path
-            << "  meshes=" << scene->mNumMeshes
-            << "  verts=" << allVertices.size()
-            << "  tris=" << indexCount / 3
-            << "  diffuse=" << (diffuseTex ? "yes" : "no")
-            << "  normal=" << (normalTex ? "yes" : "no") << "\n";
+        std::cout << "[ModelLoader] Loaded model: " << path
+            << " | meshes=" << scene->mNumMeshes
+            << " | verts=" << allVertices.size()
+            << " | indices=" << allIndices.size() << "\n";
+
         return true;
     }
 
     void draw() const
     {
-        if (!loaded) return;
-
-        if (diffuseTex) {
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, diffuseTex);
-        }
-        if (normalTex) {
-            glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, normalTex);
-        }
-
+        if (!loaded || VAO == 0 || indexCount <= 0) return;
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
 
@@ -190,25 +189,27 @@ private:
     {
         if (mat->GetTextureCount(type) == 0) return 0;
 
-        aiString texPath;
-        mat->GetTexture(type, 0, &texPath);
-        std::string fullPath = dir + texPath.C_Str();
+        aiString str;
+        if (mat->GetTexture(type, 0, &str) != AI_SUCCESS) return 0;
+
+        std::string filename = dir + std::string(str.C_Str());
 
         int w, h, ch;
-        stbi_set_flip_vertically_on_load(true);
-        unsigned char* data = stbi_load(fullPath.c_str(), &w, &h, &ch, 0);
-
+        unsigned char* data = stbi_load(filename.c_str(), &w, &h, &ch, 0);
         if (!data) {
-            std::cerr << "[ModelLoader] Texture not found: " << fullPath << "\n";
+            std::cerr << "[ModelLoader] Failed to load texture: " << filename << "\n";
             return 0;
         }
 
-        GLuint id;
-        glGenTextures(1, &id);
-        glBindTexture(GL_TEXTURE_2D, id);
+        GLenum format = GL_RGB;
+        if (ch == 1) format = GL_RED;
+        else if (ch == 3) format = GL_RGB;
+        else if (ch == 4) format = GL_RGBA;
 
-        GLenum fmt = (ch == 4) ? GL_RGBA : GL_RGB;
-        glTexImage2D(GL_TEXTURE_2D, 0, fmt, w, h, 0, fmt, GL_UNSIGNED_BYTE, data);
+        GLuint tex = 0;
+        glGenTextures(1, &tex);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -217,7 +218,8 @@ private:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         stbi_image_free(data);
-        std::cout << "[ModelLoader] Texture: " << fullPath << "\n";
-        return id;
+
+        std::cout << "[ModelLoader] Loaded texture: " << filename << "\n";
+        return tex;
     }
 };

@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 Camera::Camera(glm::vec3 startPos)
 {
@@ -23,6 +24,11 @@ glm::mat4 Camera::getViewMatrix()
 
 void Camera::processKeyboard(GLFWwindow* window)
 {
+    if (!window) {
+        std::cerr << "[Camera] processKeyboard called with null window.\n";
+        return;
+    }
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         Position += Speed * Front;
 
@@ -34,10 +40,22 @@ void Camera::processKeyboard(GLFWwindow* window)
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         Position += glm::normalize(glm::cross(Front, Up)) * Speed;
+
+    static glm::vec3 lastLoggedPos(99999.0f);
+    if (glm::length(Position - lastLoggedPos) > 25.0f) {
+        std::cout << "[Camera] Position: "
+            << Position.x << ", " << Position.y << ", " << Position.z << "\n";
+        lastLoggedPos = Position;
+    }
 }
 
 void Camera::processMouse(GLFWwindow* window)
 {
+    if (!window) {
+        std::cerr << "[Camera] processMouse called with null window.\n";
+        return;
+    }
+
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
 
@@ -60,8 +78,23 @@ void Camera::processMouse(GLFWwindow* window)
     Yaw += xoffset;
     Pitch += yoffset;
 
-    if (Pitch > 89.0f) Pitch = 89.0f;
-    if (Pitch < -89.0f) Pitch = -89.0f;
+    bool pitchClamped = false;
+    if (Pitch > 89.0f) {
+        Pitch = 89.0f;
+        pitchClamped = true;
+    }
+    if (Pitch < -89.0f) {
+        Pitch = -89.0f;
+        pitchClamped = true;
+    }
+
+    if (pitchClamped) {
+        static bool warned = false;
+        if (!warned) {
+            std::cout << "[Camera] Pitch clamp reached.\n";
+            warned = true;
+        }
+    }
 
     updateVectors();
 }

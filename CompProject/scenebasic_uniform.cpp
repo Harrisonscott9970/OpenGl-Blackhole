@@ -24,7 +24,6 @@ static float s_skyboxVerts[] = {
     -1,-1,-1, -1,-1, 1,  1,-1,-1,  1,-1,-1, -1,-1, 1,  1,-1, 1
 };
 
-
 static float randf(float minVal, float maxVal)
 {
     float t = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
@@ -33,35 +32,58 @@ static float randf(float minVal, float maxVal)
 
 SceneBasic_Uniform::SceneBasic_Uniform() {}
 
+static void LogInfo(const std::string& msg)
+{
+    std::cout << "[INFO] " << msg << std::endl;
+}
+
+static void LogWarn(const std::string& msg)
+{
+    std::cout << "[WARN] " << msg << std::endl;
+}
+
+static void LogError(const std::string& msg)
+{
+    std::cerr << "[ERROR] " << msg << std::endl;
+}
+
 void SceneBasic_Uniform::compile()
 {
     try {
+        LogInfo("Compiling black hole shader...");
         prog.compileShader("shader/blackhole.vert");
         prog.compileShader("shader/blackhole.frag");
         prog.link();
 
+        LogInfo("Compiling accretion disk shader...");
         diskProg.compileShader("shader/disk.vert");
         diskProg.compileShader("shader/disk.frag");
         diskProg.link();
 
+        LogInfo("Compiling skybox shader...");
         skyboxProg.compileShader("shader/skybox.vert");
         skyboxProg.compileShader("shader/skybox.frag");
         skyboxProg.link();
 
+        LogInfo("Compiling HDR shader...");
         hdrProg.compileShader("shader/hdr.vert");
         hdrProg.compileShader("shader/hdr.frag");
         hdrProg.link();
 
+        LogInfo("Compiling blur shader...");
         blurProg.compileShader("shader/hdr.vert");
         blurProg.compileShader("shader/blur.frag");
         blurProg.link();
 
+        LogInfo("Compiling platform shader...");
         platformProg.compileShader("shader/platform.vert");
         platformProg.compileShader("shader/platform.frag");
         platformProg.link();
+
+        LogInfo("All shaders compiled and linked successfully.");
     }
     catch (GLSLProgramException& e) {
-        std::cerr << e.what() << std::endl;
+        LogError(std::string("Shader compilation/linking failed: ") + e.what());
         exit(EXIT_FAILURE);
     }
 }
@@ -149,8 +171,8 @@ void SceneBasic_Uniform::buildSphereMesh(int stacks, int slices)
 void SceneBasic_Uniform::buildDiskMesh()
 {
     std::vector<float> verts;
-    const int   rings = 120;
-    const int   slices = 300;
+    const int rings = 120;
+    const int slices = 300;
     const float inner = 1.02f;
     const float outer = 3.2f;
     const float PI2 = 6.28318530f;
@@ -195,7 +217,7 @@ void SceneBasic_Uniform::buildDiskMesh()
 void SceneBasic_Uniform::buildPlatformMesh()
 {
     std::vector<float> verts;
-    const int   sides = 6;
+    const int sides = 6;
     const float R = 6.0f;
     const float H = 0.3f;
     const float PI2 = 6.28318530f;
@@ -318,6 +340,8 @@ void SceneBasic_Uniform::setupScreenQuad()
 
 void SceneBasic_Uniform::setupHDRFramebuffer()
 {
+    LogInfo("Creating HDR framebuffer at " + std::to_string(width) + "x" + std::to_string(height));
+
     glGenFramebuffers(1, &hdrFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 
@@ -332,11 +356,14 @@ void SceneBasic_Uniform::setupHDRFramebuffer()
 
     glGenRenderbuffers(1, &rboDepth);
     glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cerr << "[HDR] Framebuffer incomplete!\n";
+        LogError("HDR framebuffer incomplete.");
+    else
+        LogInfo("HDR framebuffer complete.");
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glGenFramebuffers(2, pingpongFBO);
@@ -344,6 +371,7 @@ void SceneBasic_Uniform::setupHDRFramebuffer()
 
     for (unsigned int i = 0; i < 2; i++) {
         glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
+
         glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[i]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -353,8 +381,11 @@ void SceneBasic_Uniform::setupHDRFramebuffer()
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongColorbuffers[i], 0);
 
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            std::cerr << "[BLUR] Ping-pong framebuffer incomplete: " << i << "\n";
+            LogError("Ping-pong framebuffer incomplete: index " + std::to_string(i));
+        else
+            LogInfo("Ping-pong framebuffer complete: index " + std::to_string(i));
     }
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -372,9 +403,13 @@ GLuint SceneBasic_Uniform::loadCubemap(std::vector<std::string> faces)
             GLenum fmt = (ch == 4) ? GL_RGBA : GL_RGB;
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, fmt, w, h, 0, fmt, GL_UNSIGNED_BYTE, data);
             stbi_image_free(data);
+
+            LogInfo("Cubemap face loaded: " + faces[i] +
+                " | size=" + std::to_string(w) + "x" + std::to_string(h) +
+                " | channels=" + std::to_string(ch));
         }
         else {
-            std::cerr << "[Cubemap] Failed: " << faces[i] << "\n";
+            LogError("Cubemap failed: " + faces[i]);
         }
     }
 
@@ -397,10 +432,14 @@ GLuint SceneBasic_Uniform::loadTexture2D(const std::string& path, bool flip)
     unsigned char* data = stbi_load(path.c_str(), &w, &h, &ch, 0);
 
     if (!data) {
-        std::cerr << "[Texture] Failed: " << path << "\n";
+        LogError("Texture failed: " + path);
         glDeleteTextures(1, &tex);
         return 0;
     }
+
+    LogInfo("Texture loaded: " + path +
+        " | size=" + std::to_string(w) + "x" + std::to_string(h) +
+        " | channels=" + std::to_string(ch));
 
     GLenum fmt = GL_RGB;
     if (ch == 1) fmt = GL_RED;
@@ -419,7 +458,6 @@ GLuint SceneBasic_Uniform::loadTexture2D(const std::string& path, bool flip)
     stbi_image_free(data);
     return tex;
 }
-
 
 void SceneBasic_Uniform::initAsteroids()
 {
@@ -604,7 +642,8 @@ void SceneBasic_Uniform::spawnPlatformsAndCells()
         energyCells.push_back(cell);
     }
 
-    std::cout << "[Spawn] " << count << " satellite platforms created.\n";
+    LogInfo("Spawned " + std::to_string(count) + " satellite platforms and " +
+        std::to_string(energyCells.size()) + " energy cells.");
 }
 
 void SceneBasic_Uniform::resetGame()
@@ -619,6 +658,10 @@ void SceneBasic_Uniform::resetGame()
 
     spawnPlatformsAndCells();
     initAsteroids();
+
+    LogInfo("Game reset.");
+    LogInfo("Camera reset to start position.");
+    LogInfo("Exposure reset to " + std::to_string(exposure));
 
     std::cout << "\n=== BLACK HOLE MISSION RESET ===\n"
         << "Collect all energy cells and return to the platform centre.\n"
@@ -672,17 +715,29 @@ void SceneBasic_Uniform::updateWindowTitle()
 
 void SceneBasic_Uniform::initScene()
 {
+    LogInfo("Initialising scene...");
     compile();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
     buildSphereMesh(128, 128);
+    LogInfo("Sphere mesh built.");
+
     buildDiskMesh();
+    LogInfo("Disk mesh built.");
+
     buildPlatformMesh();
+    LogInfo("Platform mesh built.");
+
     setupSkyboxGeometry();
+    LogInfo("Skybox geometry ready.");
+
     setupScreenQuad();
+    LogInfo("Screen quad ready.");
+
     setupHDRFramebuffer();
+    LogInfo("HDR framebuffer setup finished.");
 
     skyboxTex = loadCubemap({
         "media/skybox/right.png",  "media/skybox/left.png",
@@ -690,20 +745,27 @@ void SceneBasic_Uniform::initScene()
         "media/skybox/front.png",  "media/skybox/back.png"
         });
 
+    if (!skyboxTex)
+        LogWarn("Skybox cubemap failed to load.");
+
     satellitePlatformTex = loadTexture2D("media/blue_metal_plate_diff_4k.jpg", true);
+    if (!satellitePlatformTex)
+        LogWarn("Satellite platform texture missing. Using flat colour.");
 
     cellModelLoaded = cellModel.load("media/cell.obj");
-
     if (!cellModelLoaded)
-        std::cout << "[Init] cell.obj not found — falling back to procedural sphere.\n";
-
-    if (!satellitePlatformTex)
-        std::cout << "[Init] blue_metal_plate_diff_4k.jpg not found in media/ — satellite platforms will use flat colour.\n";
+        LogWarn("cell.obj missing. Falling back to procedural sphere.");
 
     GLFWwindow* win = glfwGetCurrentContext();
+    if (!win) {
+        LogError("GLFW current context is null in initScene().");
+        return;
+    }
+
     glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glViewport(0, 0, width, height);
+    LogInfo("Viewport initialised to " + std::to_string(width) + "x" + std::to_string(height));
 
     resetGame();
 }
@@ -751,8 +813,18 @@ void SceneBasic_Uniform::updateGame(float dt)
 {
     if (gameWon || gameLost) return;
 
+    if (dt < 0.0f) {
+        LogWarn("Negative dt detected in updateGame(). Clamping may be needed.");
+    }
+
     glm::vec3 toBH = bhPos - camera.Position;
     float distToBH = glm::length(toBH);
+
+    if (distToBH < 0.0001f) {
+        LogWarn("Camera extremely close to black hole centre; normalize may become unstable.");
+        return;
+    }
+
     glm::vec3 bhDir = glm::normalize(toBH);
 
     const glm::vec3 mainPlatformPos(0.0f, 1.0f, 145.0f);
@@ -773,6 +845,15 @@ void SceneBasic_Uniform::updateGame(float dt)
 
     float platformShield = glm::mix(0.28f, 1.0f, platInfluence);
     dangerLevel = glm::clamp(proximity * glm::mix(0.45f, 1.0f, platInfluence), 0.f, 1.f);
+
+    if (dangerLevel > 0.95f && !gameWon && !gameLost) {
+        static float lastDangerLog = -10.0f;
+        float now = (float)glfwGetTime();
+        if (now - lastDangerLog > 1.5f) {
+            LogWarn("Danger critical: " + std::to_string(dangerLevel));
+            lastDangerLog = now;
+        }
+    }
 
     float pullSpeed = (1.8f + proximity * proximity * 42.0f) * platformShield;
     float redZoneBoost = 1.0f + glm::smoothstep(0.78f, 1.0f, dangerLevel) * 10.0f;
@@ -833,6 +914,14 @@ void SceneBasic_Uniform::update(float t)
     lastT = t;
 
     GLFWwindow* w = glfwGetCurrentContext();
+    if (!w) {
+        LogError("GLFW window/context is null in update().");
+        return;
+    }
+
+    if (dt >= 0.099f) {
+        LogWarn("Large frame dt detected: " + std::to_string(dt));
+    }
 
     if (fadeState == 0 || fadeState == 3)
     {
@@ -853,35 +942,35 @@ void SceneBasic_Uniform::update(float t)
     bool hNow = glfwGetKey(w, GLFW_KEY_H) == GLFW_PRESS;
     if (hNow && !hPrev) {
         hdrEnabled = !hdrEnabled;
-        std::cout << "HDR: " << (hdrEnabled ? "ON" : "OFF") << "\n";
+        LogInfo(std::string("HDR toggled: ") + (hdrEnabled ? "ON" : "OFF"));
     }
     hPrev = hNow;
 
     bool bNow = glfwGetKey(w, GLFW_KEY_B) == GLFW_PRESS;
     if (bNow && !bPrev) {
         bloomEnabled = !bloomEnabled;
-        std::cout << "Bloom: " << (bloomEnabled ? "ON" : "OFF") << "\n";
+        LogInfo(std::string("Bloom toggled: ") + (bloomEnabled ? "ON" : "OFF"));
     }
     bPrev = bNow;
 
     bool fNow = glfwGetKey(w, GLFW_KEY_F) == GLFW_PRESS;
     if (fNow && !fPrev) {
         filmMode = !filmMode;
-        std::cout << "Film Mode: " << (filmMode ? "ON" : "OFF") << "\n";
+        LogInfo(std::string("Film Mode toggled: ") + (filmMode ? "ON" : "OFF"));
     }
     fPrev = fNow;
 
     bool qNow = glfwGetKey(w, GLFW_KEY_Q) == GLFW_PRESS;
     if (qNow && !qPrev) {
         exposure = glm::max(0.15f, exposure - 0.25f);
-        std::cout << "Exposure: " << exposure << "\n";
+        LogInfo("Exposure changed: " + std::to_string(exposure));
     }
     qPrev = qNow;
 
     bool eNow = glfwGetKey(w, GLFW_KEY_E) == GLFW_PRESS;
     if (eNow && !ePrev) {
         exposure = glm::min(5.0f, exposure + 0.25f);
-        std::cout << "Exposure: " << exposure << "\n";
+        LogInfo("Exposure changed: " + std::to_string(exposure));
     }
     ePrev = eNow;
 
@@ -915,11 +1004,16 @@ void SceneBasic_Uniform::update(float t)
                 << "/" << energyCells.size() << ")\n";
             printGameStatus();
         }
+        else
+        {
+            LogInfo("Left click: no energy cell in range.");
+        }
     }
     lmbPrev = lmbNow;
 
     bool gNow = glfwGetKey(w, GLFW_KEY_G) == GLFW_PRESS;
     if (gNow && !gPrev) {
+        LogInfo("Manual reset requested with G.");
         fadeAlpha = 0.0f;
         fadeState = 0;
         endStateTimer = 0.0f;
@@ -927,8 +1021,10 @@ void SceneBasic_Uniform::update(float t)
     }
     gPrev = gNow;
 
-    if (glfwGetKey(w, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(w, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        LogInfo("Escape pressed. Closing window.");
         glfwSetWindowShouldClose(w, true);
+    }
 
     if (shakeDuration > 0.0f)
         shakeDuration = glm::max(0.0f, shakeDuration - dt);
@@ -1151,6 +1247,16 @@ void SceneBasic_Uniform::drawOverlayUI()
 
 void SceneBasic_Uniform::render()
 {
+    if (width <= 0 || height <= 0) {
+        LogWarn("Render skipped because width/height is invalid.");
+        return;
+    }
+
+    if (height == 0) {
+        LogError("Height is zero in render(); would divide by zero in perspective setup.");
+        return;
+    }
+
     float t = (float)glfwGetTime();
     glm::mat4 view = camera.getViewMatrix();
 
@@ -1348,6 +1454,9 @@ void SceneBasic_Uniform::render()
 
     GLuint bloomTex = pingpongColorbuffers[horizontal ? 0 : 1];
 
+    if (!hdrColorBuf) LogWarn("hdrColorBuf is 0 during render.");
+    if (!bloomTex)    LogWarn("bloomTex is 0 during render.");
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -1379,6 +1488,13 @@ void SceneBasic_Uniform::render()
 
 void SceneBasic_Uniform::resize(int w, int h)
 {
+    LogInfo("Resize requested: " + std::to_string(w) + "x" + std::to_string(h));
+
+    if (w <= 0 || h <= 0) {
+        LogWarn("Resize ignored because dimensions were invalid.");
+        return;
+    }
+
     width = w;
     height = h;
 
@@ -1398,4 +1514,5 @@ void SceneBasic_Uniform::resize(int w, int h)
     pingpongColorbuffers[0] = pingpongColorbuffers[1] = 0;
 
     setupHDRFramebuffer();
+    LogInfo("Resize complete.");
 }
