@@ -318,7 +318,6 @@ If I had more time, I would improve:
 
 - LearnOpenGL.  
   Used as a general reference for OpenGL techniques, framebuffer workflows, cubemaps, camera handling, and rendering structure.  
-  [ADD SPECIFIC PAGE LINKS IF YOU USED ANY]
 
 - Assimp Documentation.  
   Used as reference for model loading and imported mesh handling.
@@ -374,12 +373,20 @@ AI-supported assistance included:
 
 - debugging support
 - explanation of OpenGL / shader issues
+
+  <img width="1106" height="778" alt="image" src="https://github.com/user-attachments/assets/34759a18-0d3f-4930-b88a-cef14f043789" />
 - project setup troubleshooting
+
+  <img width="1086" height="767" alt="image" src="https://github.com/user-attachments/assets/8554820a-05ad-45ba-a9b9-ed69a2b84356" />
 - documentation drafting and refinement
+  
+  <img width="1040" height="779" alt="image" src="https://github.com/user-attachments/assets/fb5c6461-a731-4e2b-8c0a-16722235da1f" />
 - code-structure suggestions during iteration
+  
+  <img width="1003" height="735" alt="image" src="https://github.com/user-attachments/assets/0f1ffc60-df39-4160-8b14-39499983e35f" />
 - suggestions for adding runtime logging and safety checks
 
-The final implementation was reviewed, edited, integrated, tested, and understood by me before submission.
+  <img width="1003" height="735" alt="image" src="https://github.com/user-attachments/assets/0f1ffc60-df39-4160-8b14-39499983e35f" />
 
-
+---
 <img width="794" height="546" alt="image" src="https://github.com/user-attachments/assets/10752ab8-1b9c-4bf7-896b-8054cdb71a56" />
