@@ -362,7 +362,7 @@ The project uses the following imported model asset:
 - `cell.obj`
 - `cell.mtl`
 
-This model was created by me.
+This energy cell model was created by me in Blender for use as the collectible pickup object in the scene.
 
 ---
 
