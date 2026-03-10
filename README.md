@@ -37,7 +37,10 @@ The project was developed from the **COMP3015 Lab 1 template**, then expanded wi
 
 ## Submission / Opening Instructions
 
-Open **`Project_Template.sln`** in **Visual Studio**.
+To run the project, either:
+
+- go to `CompProject\x64\Debug` and launch `project_template.exe`, or
+- go to `CompProject`, open `project_template.sln`, and run it with **Local Windows Debugger** in Visual Studio.
 
 The final submission zip includes:
 
